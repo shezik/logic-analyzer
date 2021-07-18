@@ -13,10 +13,10 @@ static const int N_SAMPLES = 300;
 
 
 // what pins to use, between 0 and 15
-static const int PIN0 = 4;
-static const int PIN1 = 5;
-static const int PIN2 = 12;
-static const int PIN3 = 14;
+static const int PIN0 = D2;
+static const int PIN1 = D1;
+static const int PIN2 = D6;
+static const int PIN3 = D5;
 // unused pins should be tied to the ground
 
 static_assert(PIN0 >= 0 && PIN0 < 16, "");
@@ -84,14 +84,24 @@ void report() {
   }
 }
 
+void hw_wdt_disable(){
+  *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
+}
+
+void hw_wdt_enable(){
+  *((volatile uint32_t*) 0x60000900) |= 1; // Hardware WDT ON
+}
+
 void loop() {
   while (Serial.read() != 'G') {
     delay(1);
   }
 
   digitalWrite(LED_BUILTIN, LOW);
+  hw_wdt_disable();
   ESP.wdtDisable();
   collect();
+  hw_wdt_enable();
   ESP.wdtEnable(WDTO_8S);
   digitalWrite(LED_BUILTIN, HIGH);
   report();
