@@ -84,6 +84,9 @@ void report() {
   }
 }
 
+
+// https://www.esp8266.com/viewtopic.php?p=83670
+// By Brais Solla
 void hw_wdt_disable(){
   *((volatile uint32_t*) 0x60000900) &= ~(1); // Hardware WDT OFF
 }
@@ -91,6 +94,7 @@ void hw_wdt_disable(){
 void hw_wdt_enable(){
   *((volatile uint32_t*) 0x60000900) |= 1; // Hardware WDT ON
 }
+
 
 void loop() {
   while (Serial.read() != 'G') {
