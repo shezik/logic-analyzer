@@ -219,13 +219,13 @@ void drawText() {
   rect(button1X, yBottom-15, smallButtonW, buttonH, corner);
   rect(button2X, buttonY, smallButtonW, buttonH, corner);
   rect(button3X, buttonY, bigButtonW, buttonH, corner);
-  rect(button4X, buttonY, smallButtonW, buttonH, corner);
+  rect(button4X, buttonY, smallButtonW+15, buttonH, corner);
   rect(button5X, buttonY, smallButtonW, buttonH, corner);
   fill(white);
   text("T:"+ str (drawTimes), button1X+3, yBottom);
   text("Start", button2X+3, buttonY+14);
   text(milliseconds == true ? "milliseconds" : "microseconds", button3X+3, buttonY+14);
-  text(reducer, button4X+3, buttonY+14);
+  text(reducer, button4X, buttonY+14);
   text("Save", button5X+3, buttonY+14);
 
 
@@ -310,11 +310,17 @@ void mouseWheel(MouseEvent event) {
   float wheel = event.getCount();
 
   if (mouseY>buttonY && mouseY <buttonY+buttonH &&
-    mouseX>button4X && mouseX <button4X+smallButtonW) {
+    mouseX>button4X && mouseX <button4X+smallButtonW+15) {
     //it is over the reducer button
     xShift *= reducer;
-    reducer-= wheel/10;
-    reducer = constrain(reducer, 0.1, 9.9);
+    if (reducer < 10) {
+      reducer-= wheel/10;
+    } else if (reducer < 100) {
+      reducer-= wheel;
+    } else {
+      reducer-= wheel*10;
+    }
+    reducer = constrain(reducer, 0.1, 500.0);
     xShift /= reducer; // preserve scroll position
     getData();
   } else {        //move the graph
