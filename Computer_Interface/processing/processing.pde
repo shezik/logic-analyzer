@@ -308,19 +308,24 @@ void mouseClicked() {
 
 void mouseWheel(MouseEvent event) {
   float wheel = event.getCount();
+  
+  // https://kobazlab.tech/2016/08/16/processing-%E6%9C%89%E5%8A%B9%E6%95%B0%E5%AD%97%E3%80%80%E5%B0%8F%E6%95%B0%E3%81%AE%E5%88%87%E3%82%8A%E6%8D%A8%E3%81%A6%E3%80%81%E5%9B%9B%E6%8D%A8%E4%BA%94%E5%85%A5/
+  reducer = float(round(reducer*pow(10,2)))/pow(10,2);
 
   if (mouseY>buttonY && mouseY <buttonY+buttonH &&
     mouseX>button4X && mouseX <button4X+smallButtonW+15) {
     //it is over the reducer button
     xShift *= reducer;
-    if (reducer < 10) {
+    if (reducer < 0.1 || (reducer == 0.1 && wheel > 0)) {
+      reducer-= wheel/100;
+    } else if (reducer < 10 || (reducer == 10 && wheel > 0)) {
       reducer-= wheel/10;
-    } else if (reducer < 100) {
+    } else if (reducer < 100 || (reducer == 100 && wheel > 0)) {
       reducer-= wheel;
     } else {
       reducer-= wheel*10;
     }
-    reducer = constrain(reducer, 0.1, 500.0);
+    reducer = constrain(reducer, 0.01, 500.0);
     xShift /= reducer; // preserve scroll position
     getData();
   } else {        //move the graph
